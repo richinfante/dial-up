@@ -1,0 +1,5 @@
+body { font-family: sans-serif; min-width: 250px; }
+h2 { margin-top: 0; }
+#domainList { list-style: none; padding: 0; }
+#domainList li { margin: 4px 0; }
+button { margin-left: 8px; }
