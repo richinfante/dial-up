@@ -76,6 +76,15 @@ function save(domains, domainDelays) {
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#icon').src = chrome.runtime.getURL('icon128.png');
+
+  document.getElementById('legal').addEventListener('click', () => {
+    if (chrome.runtime.openOptionsPage) {
+      chrome.runtime.openOptionsPage();
+    } else {
+      window.open(chrome.runtime.getURL('options.html'));
+    }
+  });
+
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     const url = new URL(tabs[0].url);
     const tld = getTopLevelDomain(url.hostname);

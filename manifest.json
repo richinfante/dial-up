@@ -5,6 +5,7 @@
   "description": "Slow down website loading with a toggle and domain exclusion menu.",
   "permissions": ["storage", "scripting", "activeTab"],
   "host_permissions": ["<all_urls>"],
+  "options_page": "options.html",
   "background": {
     "service_worker": "background.js"
   },
