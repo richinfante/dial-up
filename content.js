@@ -28,6 +28,8 @@
 
 
       function injectOverlay() {
+        let played = false;
+        let audio = null
         // Remove any existing overlay first
         const existing = document.getElementById('slowmedown-overlay');
         if (existing) existing.remove();
@@ -46,23 +48,118 @@
         overlay.style.alignItems = 'center';
         overlay.id = 'slowmedown-overlay';
 
-        // Add wlan.gif centered
-        const img = document.createElement('img');
-        img.src = chrome.runtime.getURL('wlan.gif');
-        img.alt = 'Loading...';
-        img.style.imageRendering = 'pixelated';
-        img.style.minWidth = '256px';
-        // img.style.maxWidth = '256px';
-        // img.style.maxHeight = '128px';
-        overlay.appendChild(img);
+        const title = document.createElement('a');
+        title.textContent = 'Dial_Up v1.0 - by @richinfante. Slow down your browsing experience!';
+        title.style.fontFamily = 'Arial, sans-serif';
+        title.style.fontSize = '10pt';
+        title.style.fontWeight = 'light';
+        title.style.color = '#c1c1c1';
+        title.style.marginBottom = '20px';
+        title.style.textDecoration = 'none';
+        title.style.target = '_blank';
+        title.style.position = 'absolute';
+        title.style.bottom = '10px';
+        title.style.left = '50%';
+        title.href = 'https://www.richinfante.com/2025/08/22/slow-browsing-experience-down-chrome-extension/';
+        title.style.transform = 'translateX(-50%)';
+        title.onclick = (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          window.open(title.href, '_blank');
+        };
+        overlay.appendChild(title);
+
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.justifyContent = 'center';
+        row.style.alignItems = 'center';
+        row.style.marginBottom = '20px';
+        overlay.appendChild(row);
+
+        // add icon128.png to the row
+        const icon = document.createElement('img');
+        icon.src = chrome.runtime.getURL('icon128.png');
+        icon.alt = 'Dial_Up';
+        icon.style.width = '128px';
+        icon.style.height = '128px';
+        icon.style.marginRight = '20px';
+        icon.style.marginBottom = '0px';
+        icon.style.imageRendering = 'pixelated';
+        icon.style.cursor = 'pointer';
+        row.appendChild(icon);
+
+        icon.onclick = () => {
+          if (played) return;
+          played = true;
+          // play dial-up sound
+          audio = new Audio(chrome.runtime.getURL('sounds/dial-up-internet-sound.mp3'));
+          audio.play();
+        };
+
+        const barWrapper = document.createElement('div');
+        barWrapper.style.display = 'flex';
+        barWrapper.style.flexDirection = 'column';
+        barWrapper.style.alignItems = 'start';
+        row.appendChild(barWrapper);
+
+        const text = document.createElement('div');
+        text.textContent = `Connecting...`;
+        text.style.fontFamily = 'Arial, sans-serif';
+        text.style.fontSize = '24px';
+        text.style.color = '#010081';
+        text.style.marginBottom = '10px';
+        barWrapper.appendChild(text);
+
+        // loading bar div
+        const barContainer = document.createElement('div');
+        barContainer.style.width = '200px';
+        barContainer.style.height = '15px';
+        barContainer.style.border = '2px solid #010081';
+        barContainer.style.overflow = 'hidden';
+        barContainer.style.position = 'relative';
+        barWrapper.appendChild(barContainer);
+
+        const bar = document.createElement('div');
+        bar.style.width = '0%';
+        bar.style.height = '100%';
+        bar.style.background = '#010081';
+        bar.style.position = 'absolute';
+        barContainer.appendChild(bar);
+
+        // globe.png
+        const globe = document.createElement('img');
+        globe.src = chrome.runtime.getURL('globe.png');
+        globe.alt = 'Globe';
+        globe.style.width = '128px';
+        globe.style.height = '128px';
+        globe.style.marginLeft = '20px';
+        globe.style.marginBottom = '0px';
+        globe.style.imageRendering = 'pixelated';
+        row.appendChild(globe);
+
+        // animate the bar for the duration of the delay
+        let start = null;
+        function animate(timestamp) {
+          if (!start) start = timestamp;
+          const progress = timestamp - start;
+          const percent = Math.min(progress / delay, 1);
+          bar.style.width = `${(percent * 100)}%`;
+          if (progress < delay) {
+            requestAnimationFrame(animate);
+          }
+        }
+        requestAnimationFrame(animate);
 
         document.documentElement.appendChild(overlay);
         setTimeout(() => {
           overlay.style.opacity = '0';
-          setTimeout(() => overlay.remove(), 100);
+          setTimeout(() => {
+            audio?.pause?.();
+            audio = null;
+            overlay.remove();
+          }, 100);
         }, delay);
       }
-
 
       // --- Robust SPA URL change detection ---
       let lastPath = location.pathname + location.search + location.hash;

@@ -13,6 +13,9 @@
       <button aria-label="Help"></button>
     </div>
   </div>
+  <div style="display: flex; justify-content: center; margin-top: 1em;">
+    <img alt="SlowMeDown Icon" width="64" height="64" id="icon">
+  </div>
   <div style="padding: 1em">
     <div style="margin: 12px 0;">
       <label for="delaySlider">Delay for this domain: <span id="delayValue"
@@ -20,15 +23,11 @@
       <input type="range" id="delaySlider" min="0" max="15" value="3">
     </div>
 
-    <h5 style="margin-bottom: 0">Exclusions</h5>
+    <h5 style="margin-bottom: 0">Customized Settings</h5>
     <div class="sunken-panel" style="width: 100%;">
       <table id="domainList" class="interactive" style="width: 100%">
         <tbody></tbody>
       </table>
-    </div>
-    <div>
-      <input type="text" id="domainInput" placeholder="Add domain to exclude">
-      <button id="addDomain">Add</button>
     </div>
   </div>
   <script src="popup.js"></script>
